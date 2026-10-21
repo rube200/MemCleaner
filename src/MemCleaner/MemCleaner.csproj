@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ApplicationIcon>app.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Authors>Rube200</Authors>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+        <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <Nullable>enable</Nullable>
+        <OutputType>WinExe</OutputType>
+        <PlatformTarget>x64</PlatformTarget>
+        <PublishAot>true</PublishAot>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/rube200/MemCleaner</RepositoryUrl>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <UseSystemResourceKeys>true</UseSystemResourceKeys>
+        <Version Condition="'$(GITHUB_REF_TYPE)' == 'tag'">$(GITHUB_REF_NAME.TrimStart('v'))</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.366" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="StartupTask.xml" LogicalName="StartupTask.xml"/>
+    </ItemGroup>
+</Project>
