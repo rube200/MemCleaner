@@ -58,7 +58,7 @@ jobs:
     name: Release
     if: github.ref_type == 'tag'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 5
 
     permissions:
@@ -83,4 +83,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
-        run: gh release create "$TAG" MemCleaner.exe --repo "$REPO" --title "$TAG" --generate-notes
+        run: |
+          tag=$(gh api "repos/$REPO/git/ref/tags/$TAG" --jq '.object | select(.type == "tag") | .sha')
+          notes=""
+          if [ -n "$tag" ]; then
+            notes=$(gh api "repos/$REPO/git/tags/$tag" --jq '.message')
+          fi
+          gh release create "$TAG" MemCleaner.exe --repo "$REPO" --title "$TAG" --notes "$notes" --generate-notes

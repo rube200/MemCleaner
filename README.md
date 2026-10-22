@@ -51,8 +51,10 @@ Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download). The native ex
 dotnet publish src/MemCleaner/MemCleaner.csproj -c Release -r win-x64 -o publish
 ```
 
-GitHub Actions builds the exe for pushes and pull requests to `master`, and a version tag (`v1.2.3` or `1.2.3`) publishes a release. Release
-exes carry a build attestation, which you can check with `gh attestation verify MemCleaner.exe --repo <owner>/MemCleaner`.
+GitHub Actions builds the exe for pushes and pull requests to `master`, and a version tag (`v1.2.3` or `1.2.3`)
+publishes a release. An annotated tag's message (`git tag -a 1.2.3 -m "..."`) becomes the top of the release notes.
+Release exes carry a build attestation, which you can check with
+`gh attestation verify MemCleaner.exe --repo rube200/MemCleaner`.
 
 ## License
 
