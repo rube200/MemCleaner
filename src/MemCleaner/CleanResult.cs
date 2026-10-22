@@ -5,7 +5,6 @@ namespace MemCleaner;
 internal sealed record CleanResult(
     MemoryStatus Before,
     MemoryStatus After,
-    ulong? Combined,
     IReadOnlyList<string> Failures,
     TimeSpan Duration)
 {
@@ -16,21 +15,17 @@ internal sealed record CleanResult(
 
     public ulong TotalFreed => InUseFreed + (CacheCleared ?? 0);
 
-    public string Title => Failures.Count == 0
-        ? $"Memory cleaned in {Duration.TotalSeconds:0.0} s"
-        : $"Memory partly cleaned in {Duration.TotalSeconds:0.0} s";
+    public string Title => (Failures.Count == 0 ? "Freed" : "Partly cleaned: freed") +
+                           $" {Memory.FormatBytes(TotalFreed)} in {Duration.TotalSeconds:0.0} s";
 
     public string Summary
     {
         get
         {
-            var freed = $"In use −{Memory.FormatBytes(InUseFreed)}";
+            var summary = $"RAM {Before.UsedPercent}% → {After.UsedPercent}%";
             if (CacheCleared is { } cache)
-                freed += $" · Cache −{Memory.FormatBytes(cache)}";
-            if (Combined is { } combined and > 0)
-                freed += $" · Combined {Memory.FormatBytes(combined)}";
+                summary += $"\nFrom apps {Memory.FormatBytes(InUseFreed)} · From file cache {Memory.FormatBytes(cache)}";
 
-            var summary = $"{freed}\nRAM {Before.UsedPercent}% → {After.UsedPercent}%";
             return Failures.Count == 0 ? summary : $"{summary}\nFailed: {string.Join(", ", Failures)}";
         }
     }

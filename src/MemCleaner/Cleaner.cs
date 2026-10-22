@@ -20,7 +20,6 @@ internal static unsafe class Cleaner
     {
         var started = Stopwatch.GetTimestamp();
         var before = Memory.GetStatus() ?? default;
-        ulong? combined = null;
 
         (string Name, Func<string?> Run)[] steps =
         [
@@ -28,7 +27,7 @@ internal static unsafe class Cleaner
             ("system cache", FlushSystemFileCache),
             ("modified list", () => RunMemoryListCommand(Native.MemoryFlushModifiedList)),
             ("standby list", () => RunMemoryListCommand(Native.MemoryPurgeStandbyList)),
-            ("page combining", () => CombinePages(out combined)),
+            ("page combining", CombinePages),
             ("registry cache", FlushRegistryCache)
         ];
 
@@ -37,8 +36,7 @@ internal static unsafe class Cleaner
             if (run() is { } problem)
                 failures.Add($"{name} ({problem})");
 
-        return new CleanResult(before, Memory.GetStatus() ?? default, combined, failures,
-            Stopwatch.GetElapsedTime(started));
+        return new CleanResult(before, Memory.GetStatus() ?? default, failures, Stopwatch.GetElapsedTime(started));
     }
 
     private static string? RunMemoryListCommand(int command)
@@ -53,13 +51,11 @@ internal static unsafe class Cleaner
             : DescribeWin32((WIN32_ERROR)Marshal.GetLastPInvokeError());
     }
 
-    private static string? CombinePages(out ulong? combined)
+    private static string? CombinePages()
     {
         var info = new MemoryCombineInformationEx();
-        var problem = SetSystemInformation(Native.SystemCombinePhysicalMemoryInformation, &info,
+        return SetSystemInformation(Native.SystemCombinePhysicalMemoryInformation, &info,
             (uint)sizeof(MemoryCombineInformationEx));
-        combined = problem is null ? Memory.PagesToBytes(info.PagesCombined) : null;
-        return problem;
     }
 
     private static string? FlushRegistryCache()

@@ -18,9 +18,12 @@ used / total memory, the file cache size and when you last cleaned.
 To clean, press **Ctrl+Alt+M**, right-click the icon → **Clean memory**, or launch the exe again. A notification
 then shows what was freed, for example:
 
-> **Memory cleaned in 1.4 s**  
-> In use −1.2 GB · Cache −3.4 GB · Combined 85 MB  
-> RAM 72% → 41%
+> **Freed 4.6 GB in 1.4 s**  
+> RAM 72% → 41%  
+> From apps 1.2 GB · From file cache 3.4 GB
+
+**From apps** is memory running programs were holding but not using; they get it back when they need it. **From
+file cache** is recently used files Windows kept in RAM; they're read from disk again next time.
 
 **Start with Windows** (right-click menu) starts the tray at logon without a UAC prompt. Because it then runs as
 administrator, it only works when the exe is in Program Files, where other programs can't replace it.
